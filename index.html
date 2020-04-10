@@ -1,193 +1,604 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- displays site properly based on user's device -->
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- displays site properly based on user's device -->
 
-  <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
-  
-  <title>Frontend Mentor | Job Listings</title>
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="./images/favicon-32x32.png"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Spartan:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
-  <!-- Feel free to remove these styles or customise in your own stylesheet 👍 -->
-  <style>
-    .attribution { font-size: 11px; text-align: center; }
-    .attribution a { color: hsl(228, 45%, 44%); }
-  </style>
-</head>
-<body>
-  <!-- Item Start -->
-  Photosnap
-  New!
-  Featured
-  Senior Frontend Developer
-  1d ago
-  Full Time
-  USA only
-  <!-- Role -->
-  Frontend
-  <!-- Level -->
-  Senior
-  <!-- Languages -->
-  HTML
-  CSS
-  JavaScript
-  <!-- Item End -->
+    <title>Frontend Mentor | Job Listings</title>
 
-  <!-- Item Start -->
-  Manage
-  New!
-  Featured
-  Fullstack Developer
-  1d ago
-  Part Time
-  Remote
-  <!-- Role -->
-  Fullstack
-  <!-- Level -->
-  Midweight
-  <!-- Languages -->
-  Python
-  <!-- Tools -->
-  React
-  <!-- Item End -->
+    <!-- Feel free to remove these styles or customise in your own stylesheet 👍 -->
+    <style></style>
+  </head>
+  <body>
+    <div id="vapp">
+      <div class="main-bg-image-container" v-html="getMainBgImage"></div>
+      <div
+        class="filters-container"
+        :style="{visibility: filters.length>0?'visible':'hidden'}"
+      >
+        <div class="item-filters-container">
+          <div class="item-filters">
+            <div class="filters">
+              <div class="filter-container" v-for="filter in filters">
+                <div class="filter">
+                  <p>{{filter}}</p>
+                </div>
+                <div class="filter-closing" @click="deleteFilter">
+                  <p>&#10005;</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="clear-filter-container" @click="clearFilters">
+            <p>Clear</p>
+          </div>
+        </div>
+      </div>
+      <div class="items-container">
+        <div class="items">
+          <!-- Item Start -->
+          <div v-for="item in myJsonData" :key="item.id" class="item">
+            <div
+              class="item-container"
+              :class="{'item-featured-container':item.featured}"
+            >
+              <!-- left -->
+              <div class="item-left item-side">
+                <div class="item-image">
+                  <img :src="item.logo" />
+                </div>
+                <div class="item-details">
+                  <div
+                    class="item-company-details item-detail row-cells left-first-row"
+                  >
+                    <div class="item-company-container">
+                      <div class="item-company-name row-cell">
+                        <p>{{item.company}}</p>
+                      </div>
+                      <div class="new row-cell" v-show="item.new">
+                        <p>NEW!</p>
+                      </div>
+                      <div class="featured row-cell" v-show="item.featured">
+                        <p>FEATURED</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="item-position-title-container item-detail left-second-row"
+                  >
+                    <div class="item-position-title">
+                      <p>{{item.position}}</p>
+                    </div>
+                  </div>
+                  <div
+                    class="item-position-details item-detail row-cells left-third-row"
+                  >
+                    <div class="item-position-container">
+                      <div class="row-cell posted-at item-position-detail">
+                        <p>{{item.postedAt}}</p>
+                      </div>
+                      <div class="item-detail-point"><p>.</p></div>
+                      <div class="row-cell contract item-position-detail">
+                        <p>{{item.contract}}</p>
+                      </div>
+                      <div class="item-detail-point"><p>.</p></div>
+                      <div class="row-cell location item-position-detail">
+                        <p>{{item.location}}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- right -->
+              <div class="item-right item-side">
+                <!-- Role -->
+                <div
+                  class="item-role right-itm"
+                  :data-role="item.role"
+                  @click="addToFilter"
+                >
+                  {{item.role}}
+                </div>
+                <!-- Level -->
+                <div
+                  class="item-level right-itm"
+                  :data-level="item.level"
+                  @click="addToFilter"
+                >
+                  {{item.level}}
+                </div>
+                <!-- Languages -->
+                <div v-if="item.languages" class="item-right">
+                  <div
+                    v-for="language in item.languages"
+                    class="item-language right-itm"
+                    :data-languages="language"
+                    @click="addToFilter"
+                  >
+                    {{language}}
+                  </div>
+                </div>
+                <!-- Tools -->
+                <div v-if="item.tools" class="item-right">
+                  <div
+                    v-for="tool in item.tools"
+                    class="item-tool right-itm"
+                    :data-tools="tool"
+                    @click="addToFilter"
+                  >
+                    {{tool}}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Item End -->
+        </div>
+      </div>
+    </div>
+    <script>
+      const vueApp = new Vue({
+        el: "#vapp",
+        data() {
+          return {
+            filters: [],
+            myName: "Marina",
+            jsonData: [
+              {
+                id: 1,
+                company: "Photosnap",
+                logo: "./images/photosnap.svg",
+                new: true,
+                featured: true,
+                position: "Senior Frontend Developer",
+                role: "Frontend",
+                level: "Senior",
+                postedAt: "1d ago",
+                contract: "Full Time",
+                location: "USA Only",
+                languages: ["HTML", "CSS", "JavaScript"],
+              },
+              {
+                id: 2,
+                company: "Manage",
+                logo: "./images/manage.svg",
+                new: true,
+                featured: true,
+                position: "Fullstack Developer",
+                role: "Fullstack",
+                level: "Midweight",
+                postedAt: "1d ago",
+                contract: "Part Time",
+                location: "Remote",
+                languages: ["Python"],
+                tools: ["React"],
+              },
+              {
+                id: 3,
+                company: "Account",
+                logo: "./images/account.svg",
+                new: true,
+                featured: false,
+                position: "Junior Frontend Developer",
+                role: "Frontend",
+                level: "Junior",
+                postedAt: "2d ago",
+                contract: "Part Time",
+                location: "USA Only",
+                languages: ["JavaScript"],
+                tools: ["React", "Sass"],
+              },
+              {
+                id: 4,
+                company: "MyHome",
+                logo: "./images/myhome.svg",
+                new: false,
+                featured: false,
+                position: "Junior Frontend Developer",
+                role: "Frontend",
+                level: "Junior",
+                postedAt: "5d ago",
+                contract: "Contract",
+                location: "USA Only",
+                languages: ["CSS", "JavaScript"],
+              },
+              {
+                id: 5,
+                company: "Loop Studios",
+                logo: "./images/loop-studios.svg",
+                new: false,
+                featured: false,
+                position: "Software Engineer",
+                role: "FullStack",
+                level: "Midweight",
+                postedAt: "1w ago",
+                contract: "Full Time",
+                location: "Worldwide",
+                languages: ["JavaScript"],
+                tools: ["Ruby", "Sass"],
+              },
+              {
+                id: 6,
+                company: "FaceIt",
+                logo: "./images/faceit.svg",
+                new: false,
+                featured: false,
+                position: "Junior Backend Developer",
+                role: "Backend",
+                level: "Junior",
+                postedAt: "2w ago",
+                contract: "Full Time",
+                location: "UK Only",
+                tools: ["RoR"],
+              },
+              {
+                id: 7,
+                company: "Shortly",
+                logo: "./images/shortly.svg",
+                new: false,
+                featured: false,
+                position: "Junior Developer",
+                role: "Frontend",
+                level: "Junior",
+                postedAt: "2w ago",
+                contract: "Full Time",
+                location: "Worldwide",
+                languages: ["HTML", "JavaScript"],
+                tools: ["Sass"],
+              },
+              {
+                id: 8,
+                company: "Insure",
+                logo: "./images/insure.svg",
+                new: false,
+                featured: false,
+                position: "Junior Frontend Developer",
+                role: "Frontend",
+                level: "Junior",
+                postedAt: "2w ago",
+                contract: "Full Time",
+                location: "USA Only",
+                languages: ["JavaScript"],
+                tools: ["Vue", "Sass"],
+              },
+              {
+                id: 9,
+                company: "Eyecam Co.",
+                logo: "./images/eyecam-co.svg",
+                new: false,
+                featured: false,
+                position: "Full Stack Engineer",
+                role: "Fullstack",
+                level: "Midweight",
+                postedAt: "3w ago",
+                contract: "Full Time",
+                location: "Worldwide",
+                languages: ["JavaScript", "Python"],
+                tools: ["Django"],
+              },
+              {
+                id: 10,
+                company: "The Air Filter Company",
+                logo: "./images/the-air-filter-company.svg",
+                new: false,
+                featured: false,
+                position: "Front-end Dev",
+                role: "Frontend",
+                level: "Junior",
+                postedAt: "1mo ago",
+                contract: "Part Time",
+                location: "Worldwide",
+                languages: ["JavaScript"],
+                tools: ["React", "Sass"],
+              },
+            ],
+            myJsonData: [],
+          };
+        },
+        computed: {
+          getMainBgImage: function () {
+            return '<svg xmlns="http://www.w3.org/2000/svg" width="1366" height="156"><g fill="#63BABA" fill-rule="evenodd"><path d="M470.577 563.429c-51.432-51.425-51.438-134.806-.013-186.237l.013-.013L867.235-19.424c51.441-51.434 134.836-51.434 186.276 0 48.811 48.804 51.304 126.392 7.473 178.135l178.158-178.135c51.441-51.434 134.836-51.434 186.277 0 51.431 51.424 51.437 134.805.013 186.237-.005.004-.01.008-.013.013l-396.66 396.603c-51.44 51.433-134.834 51.433-186.275 0-48.812-48.805-51.304-126.394-7.471-178.138L656.853 563.43c-51.441 51.433-134.836 51.433-186.276 0zM342.268 45.605c-51.432-51.425-51.438-134.806-.013-186.237l.013-.013 396.658-396.603c51.441-51.434 134.836-51.434 186.277 0 51.431 51.424 51.437 134.805.013 186.237-.005.004-.01.008-.013.013L528.543 45.605c-51.44 51.433-134.834 51.433-186.275 0zm-444.692 71.824c-51.432-51.424-51.438-134.806-.013-186.237l.013-.013 396.658-396.603c51.441-51.434 134.836-51.434 186.277 0 51.431 51.424 51.437 134.805.013 186.237a80.86 80.86 0 01-.013.013L83.85 117.429c-51.44 51.433-134.834 51.433-186.275 0z"/></g></svg>';
+          },
+        },
+        methods: {
+          addToFilter: function (e) {
+            var filter = e.target.innerHTML;
+            filter = filter.trim();
+            this.filters = this.filters.filter(function (item) {
+              return item !== filter;
+            });
+            this.filters.push(filter);
+            console.log(this.filters);
+            console.log(this.$refs);
+            this.filterMyJsonData();
+          },
+          deleteFilter: function (e) {
+            var filter =
+              e.target.parentNode.parentNode.childNodes[0].childNodes[0]
+                .innerHTML;
+            this.filters = this.filters.filter(function (item) {
+              return item !== filter;
+            });
+            console.log(this.filters);
+            this.filterMyJsonData();
+          },
+          stringToHTML: function (str) {
+            var parser = new DOMParser();
+            var doc = parser.parseFromString(str, "text/html");
+            console.log(doc.body);
+            return doc.body;
+          },
+          filterMyJsonData: function () {
+            var filters = this.filters;
+            this.myJsonData = this.jsonData.filter(function (item) {
+              var itemAttrs = [];
+              itemAttrs.push(item.role, item.level);
+              if (item.languages) {
+                itemAttrs = [...itemAttrs, ...item.languages];
+              }
+              if (item.tools) {
+                itemAttrs = [...itemAttrs, ...item.tools];
+              }
+              // var intersection = itemAttrs.filter(
+              //   value => -1 !== filters.indexOf(value)
+              // );
+              var intersection = itemAttrs.filter((value) => {
+                return filters.includes(value);
+              });
+              if (intersection.length == filters.length) {
+                return item;
+              }
+            });
+            console.log(this.myJsonData);
+          },
+          clearFilters: function () {
+            this.filters = [];
+            this.myJsonData = this.jsonData;
+          },
+        },
+        mounted() {
+          this.$data.myJsonData = this.$data.jsonData;
+        },
+      });
+    </script>
+    <style>
+      body,
+      p,
+      a,
+      h1,
+      h2,
+      h3,
+      div {
+        margin: 0;
+        padding: 0;
+      }
 
-  <!-- Item Start -->
-  Account
-  New!
-  Junior Frontend Developer
-  2d ago
-  Part Time
-  USA only
-  <!-- Role -->
-  Frontend
-  <!-- Level -->
-  Junior
-  <!-- Languages -->
-  JavaScript
-  <!-- Tools -->
-  React
-  Sass
-  <!-- Item End -->
+      body {
+        background-color: hsl(180, 52%, 96%);
+        font-size: 15px;
+        font-family: "Spartan", sans-serif;
+        margin: 0;
+        padding: 0;
+      }
 
-  <!-- Item Start -->
-  MyHome
-  Junior Frontend Developer
-  5d ago
-  Contract
-  USA only
-  <!-- Role -->
-  Frontend
-  <!-- Level -->
-  Junior
-  <!-- Languages -->
-  CSS
-  JavaScript
-  <!-- Item End -->
+      #vapp {
+      }
 
-  <!-- Item Start -->
-  Loop Studios
-  Software Engineer
-  1w ago
-  Full Time
-  Worldwide
-  <!-- Role -->
-  Fullstack
-  <!-- Level -->
-  Midweight
-  <!-- Languages -->
-  JavaScript
-  Ruby
-  <!-- Tools -->
-  Sass
-  <!-- Item End -->
+      .main-bg-image-container {
+        background-color: hsl(180, 29%, 50%);
+        display: flex;
+        justify-content: center;
+      }
 
-  <!-- Item Start -->
-  FaceIt
-  Junior Backend Developer
-  2w ago
-  Full Time
-  UK only
-  <!-- Role -->
-  Backend
-  <!-- Level -->
-  Junior
-  <!-- Languages -->
-  Ruby
-  <!-- Tools -->
-  RoR
-  <!-- Item End -->
+      .item-filters-container {
+        display: flex;
+        justify-content: space-between;
+        padding: 15px 30px;
+        box-shadow: 10px 15px 15px hsla(187, 29%, 50%, 0.13);
+      }
 
-  <!-- Item Start -->
-  Shortly
-  Junior Developer
-  2w ago
-  Full Time
-  Worldwide
-  <!-- Role -->
-  Frontend
-  <!-- Level -->
-  Junior
-  <!-- Languages -->
-  HTML
-  JavaScript
-  <!-- Tools -->
-  Sass
-  <!-- Item End -->
+      .filters {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+      }
 
-  <!-- Item Start -->
-  Insure
-  Junior Frontend Developer
-  2w ago
-  Full Time
-  USA only
-  <!-- Role -->
-  Frontend
-  <!-- Level -->
-  Junior
-  <!-- Languages -->
-  JavaScript
-  <!-- Tools -->
-  Vue
-  Sass
-  <!-- Item End -->
+      .filter-container {
+        display: flex;
+        background-color: hsl(180, 31%, 95%);
+        border-radius: 5px;
+        margin: 5px;
+      }
 
-  <!-- Item Start -->
-  Eyecam Co.
-  Full Stack Engineer
-  3w ago
-  Full Time
-  Worldwide
-  <!-- Role -->
-  Fullstack
-  <!-- Level -->
-  Midweight
-  <!-- Languages -->
-  JavaScript
-  Python
-  <!-- Tools -->
-  Django
-  <!-- Item End -->
+      .filter {
+        color: hsl(180, 29%, 50%);
+        padding: 7px;
+      }
 
-  <!-- Item Start -->
-  The Air Filter Company
-  Front-end Dev
-  1mo ago
-  Part Time
-  Worldwide
-  <!-- Role -->
-  Frontend
-  <!-- Level -->
-  Junior
-  <!-- Languages -->
-  JavaScript
-  <!-- Tools -->
-  React
-  Sass
-  <!-- Item End -->
-  
-  <div class="attribution">
-    Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank">Frontend Mentor</a>. 
-    Coded by <a href="#">Your Name Here</a>.
-  </div>
-</body>
+      .filter-closing {
+        color: #ffffff;
+        background-color: hsl(180, 29%, 50%);
+        border-bottom-right-radius: inherit;
+        border-top-right-radius: inherit;
+        cursor: pointer;
+      }
+
+      .filter-closing:hover {
+        background-color: hsl(180, 14%, 20%);
+      }
+
+      .filter-closing p {
+        padding: 7px;
+        font-weight: bold;
+      }
+
+      .clear-filter-container {
+        display: flex;
+        align-items: center;
+        text-decoration: underline;
+        color: hsl(180, 29%, 50%);
+        cursor: pointer;
+      }
+
+      .items-container {
+        max-width: 1366px;
+        margin: 0 auto;
+      }
+
+      .item,
+      .filters-container {
+        background-color: white;
+        margin: 35px auto;
+        width: 85%;
+        border-radius: 5px;
+      }
+
+      .item {
+        margin-bottom: 0;
+      }
+
+      .filters-container {
+        position: relative;
+        bottom: 30px;
+        margin: 0 auto;
+      }
+
+      .item-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 30px;
+        border-left: 4px solid white;
+        border-radius: inherit;
+        box-shadow: 10px 15px 15px hsla(187, 29%, 50%, 0.13);
+        flex-wrap: wrap;
+      }
+
+      .item-featured-container {
+        border-left: 4px solid hsl(180, 29%, 50%);
+      }
+
+      .item-left {
+        align-items: center;
+      }
+
+      .item-right {
+      }
+
+      .right-itm {
+        background-color: hsl(180, 31%, 95%);
+        color: hsl(180, 29%, 50%);
+        cursor: pointer;
+        padding: 7px;
+        border-radius: 5px;
+        margin: 5px;
+      }
+
+      .right-itm:hover {
+        background-color: hsl(180, 29%, 50%);
+        color: hsl(180, 31%, 95%);
+      }
+
+      .item-side {
+        flex-wrap: wrap;
+      }
+
+      .item-left,
+      .item-right,
+      .row-cells {
+        display: flex;
+        flex-direction: row;
+      }
+
+      .item-company-name {
+        color: hsl(180, 29%, 50%);
+        padding: 6px 15px 6px 0;
+      }
+
+      .new {
+        background-color: hsl(180, 29%, 50%);
+        margin-right: 7px;
+      }
+
+      .featured {
+        background-color: hsl(180, 14%, 20%);
+      }
+
+      .new,
+      .featured {
+        color: #ffffff;
+        padding: 6px 8px;
+        border-radius: 15px;
+        height: 100%;
+        display: flex;
+        align-items: center;
+      }
+
+      .new p,
+      .featured p {
+        margin: 0;
+        line-height: 1;
+      }
+
+      .item-position-title {
+        font-weight: bold;
+      }
+
+      .item-position-title:hover {
+        color: hsl(180, 29%, 50%);
+        cursor: pointer;
+      }
+
+      .item-position-detail {
+        color: hsl(180, 8%, 52%);
+      }
+
+      .item-details {
+        display: flex;
+        flex-direction: column;
+        height: 88px;
+        justify-content: space-between;
+        margin: 0 0 0 25px;
+      }
+
+      .item-detail {
+        height: 33%;
+        display: flex;
+        align-items: center;
+      }
+
+      .item-detail-point {
+        line-height: 0.5;
+        font-weight: bold;
+        color: hsl(180, 8%, 52%);
+        padding: 0 10px;
+      }
+
+      .item-company-container,
+      .item-position-container {
+        display: flex;
+      }
+
+      .item-company-details {
+        align-items: flex-start;
+      }
+
+      .item-position-details {
+        align-items: flex-end;
+      }
+    </style>
+  </body>
 </html>
