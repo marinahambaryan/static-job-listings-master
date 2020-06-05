@@ -1,0 +1,278 @@
+body,
+p,
+a,
+h1,
+h2,
+h3,
+div {
+  margin: 0;
+  padding: 0;
+}
+
+p,
+div {
+  white-space: nowrap;
+}
+
+hr {
+  display: none;
+}
+
+body {
+  background-color: hsl(180, 52%, 96%);
+  font-size: 15px;
+  font-family: "Spartan", sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+#vapp {
+}
+
+.main-bg-image-container {
+  background-image: url("./images/bg-header-desktop.svg");
+  background-color: hsl(180, 29%, 50%);
+  height: 155px;
+  display: flex;
+  justify-content: center;
+}
+
+.item-filters-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 30px;
+  box-shadow: 10px 15px 15px hsla(187, 29%, 50%, 0.13);
+}
+
+.filters {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.filter-container {
+  display: flex;
+  background-color: hsl(180, 31%, 95%);
+  border-radius: 5px;
+  margin: 5px;
+}
+
+.filter {
+  color: hsl(180, 29%, 50%);
+  padding: 7px;
+}
+
+.filter-closing {
+  color: #ffffff;
+  background-color: hsl(180, 29%, 50%);
+  border-bottom-right-radius: inherit;
+  border-top-right-radius: inherit;
+  cursor: pointer;
+}
+
+.filter-closing:hover {
+  background-color: hsl(180, 14%, 20%);
+}
+
+.filter-closing p {
+  padding: 7px;
+  font-weight: bold;
+}
+
+.clear-filter-container {
+  display: flex;
+  align-items: center;
+  text-decoration: underline;
+  color: hsl(180, 29%, 50%);
+  cursor: pointer;
+  margin-left: 30px;
+}
+
+.items-container {
+  max-width: 1366px;
+  margin: 0 auto;
+}
+
+.item,
+.filters-container {
+  background-color: white;
+  margin: 45px auto;
+  width: 85%;
+  border-radius: 5px;
+}
+
+.item {
+  margin-bottom: 0;
+}
+
+.filters-container {
+  position: relative;
+  bottom: 30px;
+  margin: 0 auto;
+}
+
+.item-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30px;
+  border-left: 4px solid white;
+  border-radius: inherit;
+  box-shadow: 10px 15px 15px hsla(187, 29%, 50%, 0.13);
+  flex-wrap: wrap;
+}
+
+.item-featured-container {
+  border-left: 4px solid hsl(180, 29%, 50%);
+}
+
+.item-left {
+  align-items: center;
+}
+
+.item-right {
+}
+
+.right-itm {
+  background-color: hsl(180, 31%, 95%);
+  color: hsl(180, 29%, 50%);
+  cursor: pointer;
+  padding: 7px;
+  border-radius: 5px;
+  margin: 5px;
+}
+
+.right-itm:hover {
+  background-color: hsl(180, 29%, 50%);
+  color: hsl(180, 31%, 95%);
+}
+
+.item-side {
+  flex-wrap: wrap;
+}
+
+.item-left,
+.item-right,
+.row-cells {
+  display: flex;
+  flex-direction: row;
+}
+
+.item-company-name {
+  color: hsl(180, 29%, 50%);
+  padding: 6px 15px 6px 0;
+}
+
+.new {
+  background-color: hsl(180, 29%, 50%);
+  margin-right: 7px;
+}
+
+.featured {
+  background-color: hsl(180, 14%, 20%);
+}
+
+.new,
+.featured {
+  color: #ffffff;
+  padding: 6px 8px;
+  border-radius: 15px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.new p,
+.featured p {
+  margin: 0;
+  line-height: 1;
+}
+
+.item-position-title {
+  font-weight: bold;
+}
+
+.item-position-title:hover {
+  color: hsl(180, 29%, 50%);
+  cursor: pointer;
+}
+
+.item-position-detail {
+  color: hsl(180, 8%, 52%);
+}
+
+.item-details {
+  display: flex;
+  flex-direction: column;
+  height: 88px;
+  justify-content: space-between;
+}
+
+.item-detail {
+  height: 33%;
+  display: flex;
+  align-items: center;
+}
+.item-image {
+  margin: 0 25px 0 0;
+}
+
+.item-detail-point {
+  line-height: 0.5;
+  font-weight: bold;
+  color: hsl(180, 8%, 52%);
+  padding: 0 10px;
+}
+
+.item-company-container,
+.item-position-container {
+  display: flex;
+}
+
+.item-company-details {
+  align-items: flex-start;
+}
+
+.item-position-details {
+  align-items: flex-end;
+}
+
+.mobile-view-logo {
+  display: none;
+}
+
+@media screen and (max-width: 500px) {
+  hr {
+    display: block;
+    background-color: hsl(180, 8%, 52%);
+    width: 100%;
+    height: 1px;
+    border: none;
+    margin: 20px 0;
+  }
+
+  .item-container {
+    position: relative;
+    padding: 30px 15px;
+  }
+
+  .item-image {
+    display: none;
+  }
+  .mobile-view-logo {
+    display: block;
+    position: absolute;
+    top: -10%;
+  }
+
+  .mobile-view-logo img {
+    width: 50px;
+  }
+}
+
+@media screen and (max-width: 375px) {
+  .main-bg-image-container {
+    background-image: url("./images/bg-header-mobile.svg");
+    width: 100%;
+  }
+}
